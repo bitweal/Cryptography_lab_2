@@ -45,35 +45,49 @@ def calculate_x(alpha, beta, prime, power, n, x_prev, r_table):
                 alpha_power += xi * -1
             else:
                 alpha_power += xi * -1 * prime**pj
-        print('alpha_power: ', alpha_power)
-        print('alpha: ',pow(alpha, alpha_power, n+1))
         x = ((beta * pow(alpha, alpha_power, n+1))**(n//(prime**(i+1)))) % (n+1)
-        print('x: ', x)
         x = r_table.index(x)
         x_prev.append(x) 
-        suma += x     
+        suma += x * prime**i     
 
     return suma
 
-def solve_congruences(congruences):
-    m = 1
-    for modulus, _ in congruences:
-        m *= modulus
-    x = 0
-    for modulus, residue in congruences:
-        mi = m // modulus
-        mi_inverse = pow(mi, -1, modulus)
-        x += residue * mi * mi_inverse
-    
-    return x % m
+def gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
+def lcm(a, b):
+    return (a * b) // gcd(a, b)
+
+def extended_gcd(a, b):
+    if b == 0:
+        return a, 1, 0
+    else:
+        d, x, y = extended_gcd(b, a % b)
+        return d, y, x - (a // b) * y
+
+def chinese_remainder_theorem(suma_x, module):
+    M = 1
+    for num in module:
+        M = lcm(M, num)
+
+    result = 0
+
+    for a_i, n_i in zip(suma_x, module):
+        b_i = M // n_i
+        _, b_i_inv, _ = extended_gcd(b_i, n_i)
+        result += a_i * b_i * b_i_inv
+
+    return result % M
 
 def silver_polig_hellman(alpha, beta, n):
     prime_factors, powers = canonical_decomposition(n)
     print('canonical_decomposition - ', prime_factors, ' - ', powers)
     r_table = calculate_r_table(alpha, n, prime_factors)
     print('calculate_r_table - ', r_table)
-    congruences = []
-    
+    module = []
+    suma_x = []
     for i, prime in enumerate(prime_factors):
         x0 = calculate_x0(beta, n, prime)
         x0 = r_table[i].index(x0)
@@ -81,9 +95,11 @@ def silver_polig_hellman(alpha, beta, n):
         x_prev = [x0]
         x = calculate_x(alpha, beta, prime, powers[i], n, x_prev, r_table[i])
         print('calculate_x - ', x)
-        suma_x = x0 + x
+        module.append(prime**powers[i])
+        suma_x.append(x0 + x)
+        print(suma_x,' mod ', module)
     
-    return solve_congruences(congruences)
+    return chinese_remainder_theorem(suma_x, module)
 
 n = int(input('Enter p: '))
 alpha = int(input('Enter alpha: '))
