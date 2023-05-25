@@ -86,7 +86,10 @@ def silver_polig_hellman(alpha, beta, n):
     suma_x = []
     for i, prime in enumerate(prime_factors):
         x0 = calculate_x0(beta, n, prime)
-        x0 = r_table[i].index(x0)
+        if x0 in r_table[i]:
+            x0 = r_table[i].index(x0)
+        else:
+            return None
         x_prev = [x0]
         x = calculate_x(alpha, beta, prime, powers[i], n, x_prev, r_table[i])
         module.append(prime**powers[i])
