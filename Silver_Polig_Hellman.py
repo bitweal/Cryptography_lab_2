@@ -1,6 +1,4 @@
-﻿import math
-
-def canonical_decomposition(n):
+﻿def canonical_decomposition(n):
     prime_factors = []
     powers = []
 
@@ -96,12 +94,12 @@ def silver_polig_hellman(alpha, beta, n):
     
     return chinese_remainder_theorem(suma_x, module)
 
-n = int(input('Enter p: '))
-alpha = int(input('Enter alpha: '))
-beta = int(input('Enter beta: '))
+#n = int(input('Enter p: '))
+#alpha = int(input('Enter alpha: '))
+#beta = int(input('Enter beta: '))
 
-x = silver_polig_hellman(alpha, beta, n)
-if x is not None:
-    print(f"Дискретний логарифм числа {beta} з основою {alpha} = {x}")
-else:
-    print(f"Дискретного логарифму не знайдено")
+#x = silver_polig_hellman(alpha, beta, n)
+#if x is not None:
+#    print(f"Дискретний логарифм числа {beta} з основою {alpha} = {x}")
+#else:
+#    print(f"Дискретного логарифму не знайдено")
