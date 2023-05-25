@@ -15,8 +15,8 @@ def timeit_decorator(func):
 
 @timeit_decorator
 def run_function1(alpha, beta, p):
-        global result1
-        result1 = discrete_logarithm_enumer(alpha, beta, p)
+    global result1
+    result1 = discrete_logarithm_enumer(alpha, beta, p)
 
 @timeit_decorator
 def run_function2(alpha, beta, p):
@@ -31,20 +31,20 @@ for i in range(1,3):
     beta = int(input('Enter beta: '))
 
     thread1 = threading.Thread(target=run_function1(alpha, beta, p))
+    if result1 is not None:
+        print(f"Дискретний логарифм числа {beta} з основою {alpha} = {result1}, перебором")
+    else:
+        print(f"Дискретного логарифму не знайдено")
+
     thread2 = threading.Thread(target=run_function2(alpha, beta, p))
+
+    if result2 is not None:
+        print(f"Дискретний логарифм числа {beta} з основою {alpha} = {result2}, за алгоритмом Сiльвера-Полiга-Геллмана")
+    else:
+        print(f"Дискретного логарифму не знайдено")
 
     thread1.start()
     thread2.start()
 
     thread1.join()
     thread2.join()
-
-    if result1 is not None:
-        print(f"Дискретний логарифм числа {beta} з основою {alpha} = {result1}, перебором")
-    else:
-        print(f"Дискретного логарифму не знайдено")
-
-    if result2 is not None:
-        print(f"Дискретний логарифм числа {beta} з основою {alpha} = {result2}, за алгоритмом Сiльвера-Полiга-Геллмана")
-    else:
-        print(f"Дискретного логарифму не знайдено")
